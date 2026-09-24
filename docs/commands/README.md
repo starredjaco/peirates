@@ -19,6 +19,7 @@ Commands can normally be selected interactively by number, canonical name, or al
 | 9 | `cert-menu` | [Certificate authentication contexts](cert-menu.md) |
 | 10 | `list-secrets` | [List Kubernetes Secrets](list-secrets.md) |
 | 11 | `secret-to-sa` | [Import a service-account token from a Secret](secret-to-sa.md) |
+| 35 | `scan-configmaps` | [Scan ConfigMaps for misplaced credentials](scan-configmaps.md) |
 
 ## Cloud credential and data access
 

@@ -49,7 +49,7 @@ deletes only a cluster positively owned by the current invocation.
 make kind-test
 ```
 
-`make kind-test` remains the short namespace API smoke test. To run all 21
+`make kind-test` remains the short namespace API smoke test. To run all 22
 automated Kind scenarios serially, use:
 
 ```sh
@@ -183,7 +183,7 @@ retain and report exactly one file.
 
 Run `test/nodes-proxy-exec-kind-manual.sh` from an interactive terminal to
 exercise `nodes-proxy-exec` by hand against a disposable Kind cluster. This
-manual harness is intentionally separate from the 21 automated Kind targets.
+manual harness is intentionally separate from the 22 automated Kind targets.
 It starts Peirates directly in a runner Pod, prints the exact node, stored-token
 index, kubelet origin, verified-TLS settings, marker command, and confirmation
 string to enter, and asks the operator to choose the displayed row for the
@@ -261,6 +261,20 @@ and both named aliases work; and that an unprivileged service account receives
 the denial path without fixture names being disclosed. The test refuses a
 pre-existing `peirates-list-secrets-integration` cluster and deletes only its
 dedicated cluster. Override the name with `PEIRATES_LIST_SECRETS_KIND_CLUSTER`.
+
+## ConfigMap credential scan integration test
+
+Run `make scan-configmaps-kind-test` to create a disposable Kind cluster and
+exercise menu item 35 and `scan-configmaps` with a real node client certificate
+and stored service-account tokens. The test independently verifies a
+cluster-wide ConfigMap list grant for the certificate, a namespace-only grant
+for one token, and denial for another token. ConfigMap fixtures cover JWTs in
+`data` and `binaryData`, an OpenSSH private key, and disposable AWS, Google,
+and Azure credential formats. It checks the reported locations and detectors,
+a clean negative fixture, and omission of credential values from CLI output.
+The test refuses a pre-existing `peirates-scan-configmaps-integration` cluster
+and deletes only a cluster proven to belong to this run. Override its name
+with `PEIRATES_SCAN_CONFIGMAPS_KIND_CLUSTER`.
 
 ## Secret-to-service-account integration test
 

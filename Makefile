@@ -27,6 +27,7 @@ KIND_TEST_CASES := \
 	certificate-menu-kind-test:PEIRATES_CERTIFICATE_KIND_CLUSTER:peirates-certificate-integration:test/certificate-menu-kind-integration.sh \
 	nodefs-steal-secrets-kind-test:PEIRATES_NODEFS_SECRETS_KIND_CLUSTER:peirates-nodefs-secrets-integration:test/nodefs-steal-secrets-kind-integration.sh \
 	list-secrets-kind-test:PEIRATES_LIST_SECRETS_KIND_CLUSTER:peirates-list-secrets-integration:test/list-secrets-kind-integration.sh \
+	scan-configmaps-kind-test:PEIRATES_SCAN_CONFIGMAPS_KIND_CLUSTER:peirates-scan-configmaps-integration:test/scan-configmaps-kind-integration.sh \
 	secret-to-sa-kind-test:PEIRATES_SECRET_TO_SA_KIND_CLUSTER:peirates-secret-to-sa-integration:test/secret-to-sa-kind-integration.sh \
 	attack-hostpath-kind-test:PEIRATES_ATTACK_HOSTPATH_KIND_CLUSTER:peirates-attack-hostpath-integration:test/attack-hostpath-kind-integration.sh \
 	hostpid-breakout-kind-test:PEIRATES_HOSTPID_BREAKOUT_KIND_CLUSTER:peirates-hostpid-breakout-integration:test/hostpid-breakout-kind-integration.sh \
@@ -124,6 +125,9 @@ nodefs-steal-secrets-kind-test:
 
 list-secrets-kind-test:
 	GOCACHE=$(GOCACHE) GOMODCACHE=$(GOMODCACHE) ./test/list-secrets-kind-integration.sh
+
+scan-configmaps-kind-test:
+	GOCACHE=$(GOCACHE) GOMODCACHE=$(GOMODCACHE) ./test/scan-configmaps-kind-integration.sh
 
 secret-to-sa-kind-test:
 	GOCACHE=$(GOCACHE) GOMODCACHE=$(GOMODCACHE) ./test/secret-to-sa-kind-integration.sh

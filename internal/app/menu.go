@@ -60,6 +60,7 @@ Steal Service Accounts   |
 -------------------------+
 [10] List secrets in this namespace from API server [list-secrets, get-secrets] 
 [11] Get a service account token from a secret [secret-to-sa]
+[35] Scan ConfigMaps for misplaced credentials with each stored identity [scan-configmaps]
 [12] Request IAM credentials from AWS Metadata API [aws-get-token] *
 [13] Request IAM credentials from GCP Metadata API [gcp-get-token] *
 [14] Request kube-env from GCP Metadata API [gcp-attack-kube-env] 
@@ -244,6 +245,8 @@ func setUpCompletionMainMenu() *readline.PrefixCompleter {
 		readline.PcItem("get-secrets"),
 		// [11] Get a service account token from a secret [secret-to-sa]
 		readline.PcItem("secret-to-sa"),
+		// [35] Scan ConfigMaps for misplaced credentials with each stored identity [scan-configmaps]
+		readline.PcItem("scan-configmaps"),
 		// [12] Request IAM credentials from AWS Metadata API [get-aws-token] *
 		readline.PcItem("get-aws-token"),
 		readline.PcItem("aws-get-token"),

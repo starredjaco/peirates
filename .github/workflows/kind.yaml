@@ -40,6 +40,8 @@ jobs:
             cluster-env: PEIRATES_NODEFS_SECRETS_KIND_CLUSTER
           - target: list-secrets-kind-test
             cluster-env: PEIRATES_LIST_SECRETS_KIND_CLUSTER
+          - target: scan-configmaps-kind-test
+            cluster-env: PEIRATES_SCAN_CONFIGMAPS_KIND_CLUSTER
           - target: secret-to-sa-kind-test
             cluster-env: PEIRATES_SECRET_TO_SA_KIND_CLUSTER
           - target: attack-hostpath-kind-test

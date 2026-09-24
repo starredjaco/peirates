@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"io"
 	"os"
 	"os/exec"
 	"sort"
@@ -40,6 +41,9 @@ func TestMainSafeModuleHelper(t *testing.T) {
 	}
 	launchHostLogSymlinkRead = func(ServerInfo) error {
 		return errors.New("host-log symlink read unavailable in smoke test")
+	}
+	launchConfigMapScan = func(context.Context, ServerInfo, []ServiceAccount, []ClientCertificateKeyPair, io.Writer) error {
+		return errors.New("ConfigMap scan unavailable in smoke test")
 	}
 	// Keep cloud-module smoke tests local and deterministic. These helpers are
 	// used only by code paths that already support dependency injection.
@@ -103,6 +107,8 @@ func TestMainRunsSafeModulesFromMFlag(t *testing.T) {
 		{"hostlog-symlink-read", "host-log symlink read unavailable in smoke test"},
 		{"33", "host-log symlink read unavailable in smoke test"},
 		{"hostlog-read", "host-log symlink read unavailable in smoke test"},
+		{"scan-configmaps", "ConfigMap scan unavailable in smoke test"},
+		{"35", "ConfigMap scan unavailable in smoke test"},
 	} {
 		t.Run(test.module, func(t *testing.T) {
 			cmd := exec.Command(os.Args[0], "-test.run=^TestMainSafeModuleHelper$")
@@ -249,7 +255,7 @@ func TestMainMenuCompletionIncludesEveryCanonicalModule(t *testing.T) {
 		"attack-kops-aws-1", "aws-attack-kops-1", "aws-s3-ls",
 		"aws-s3-ls-objects", "attack-pod-hostpath-mount", "exec-via-api",
 		"exec-via-kubelet", "leakyvessels", "hostpid-breakout", "hostpid-ptrace-breakout", "container-escape-scan", "docker-socket-breakout",
-		"hostroot-breakout", "hostlog-symlink-read", "hostlog-read", "nodes-proxy-exec", "nodefs-steal-secrets", "nodefs-secrets-list",
+		"hostroot-breakout", "hostlog-symlink-read", "hostlog-read", "nodes-proxy-exec", "scan-configmaps", "nodefs-steal-secrets", "nodefs-secrets-list",
 		"inject-and-exec",
 		"kubectl", "kubectl-try-all", "kubectl-try-all-until-success", "curl",
 		"set-auth-can-i", "tcpscan", "enumerate-dns", "cd", "pwd", "ls", "cat",
@@ -307,7 +313,7 @@ func TestCanonicalModuleCommandsRemainUnchanged(t *testing.T) {
 		"aws-get-token", "gcp-get-token", "gcp-attack-kube-env", "gcp-attack-kops-1", "aws-attack-kops-1",
 		"aws-s3-ls", "aws-s3-ls-objects", "exec-via-api", "exec-via-kubelet", "leakyvessels", "hostpid-breakout", "hostpid-ptrace-breakout",
 		"container-escape-scan", "docker-socket-breakout", "hostroot-breakout", "hostlog-symlink-read",
-		"nodes-proxy-exec",
+		"nodes-proxy-exec", "scan-configmaps",
 		"nodefs-steal-secrets", "nodefs-secrets-list", "inject-and-exec", "curl", "set-auth-can-i", "tcpscan",
 		"enumerate-dns", "bash", "sh", "full", "short", "exit", "quit",
 	} {
@@ -452,5 +458,34 @@ func TestNodesProxyExecDispatchUsesSessionValueSnapshot(t *testing.T) {
 	}
 	if session.Connection.Token != "active" {
 		t.Fatalf("launcher mutated active identity: %#v", session.Connection)
+	}
+}
+
+func TestScanConfigMapsDispatchUsesSessionValueSnapshot(t *testing.T) {
+	original := launchConfigMapScan
+	t.Cleanup(func() { launchConfigMapScan = original })
+
+	session := NewSession(ServerInfo{APIServer: "https://api.example", Token: "active"})
+	session.ServiceAccounts = []ServiceAccount{{Name: "account", Token: "stored"}}
+	session.ClientCertificates = []ClientCertificateKeyPair{{Name: "certificate", APIServer: "https://other.example"}}
+	calls := 0
+	launchConfigMapScan = func(_ context.Context, connection ServerInfo, accounts []ServiceAccount, certificates []ClientCertificateKeyPair, _ io.Writer) error {
+		calls++
+		if connection != session.Connection || len(accounts) != 1 || accounts[0].Token != "stored" || len(certificates) != 1 || certificates[0].Name != "certificate" {
+			t.Errorf("scanner inputs = (%#v, %#v, %#v)", connection, accounts, certificates)
+		}
+		accounts[0].Name = "changed"
+		certificates[0].Name = "changed"
+		return nil
+	}
+	registry := newModuleRegistry(session)
+	for _, command := range []string{"35", "scan-configmaps"} {
+		result, found := registry.Run(canonicalModuleCommand(command))
+		if !found || result != modules.Continue {
+			t.Fatalf("scan-configmaps dispatch for %q = (%v, %t), want (Continue, true)", command, result, found)
+		}
+	}
+	if calls != 2 || session.ServiceAccounts[0].Name != "account" || session.ClientCertificates[0].Name != "certificate" || session.Connection.Token != "active" {
+		t.Fatalf("scanner changed session or was not called twice: calls=%d session=%#v", calls, session)
 	}
 }

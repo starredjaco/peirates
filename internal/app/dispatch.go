@@ -20,7 +20,7 @@ var commandAliases = map[string]string{
 	"3": "get-pods", "list-pods": "get-pods", "4": "dump-pod-info", "dump-podinfo": "dump-pod-info",
 	"6": "aws-enter-credentials", "enter-aws-credentials": "aws-enter-credentials", "aws-creds": "aws-enter-credentials",
 	"7": "aws-assume-role", "8": "aws-empty-assumed-role", "empty-aws-assumed-role": "aws-empty-assumed-role",
-	"9": "cert-menu", "10": "list-secrets", "get-secrets": "list-secrets", "11": "secret-to-sa", "get-secret": "secret-to-sa",
+	"9": "cert-menu", "10": "list-secrets", "get-secrets": "list-secrets", "11": "secret-to-sa", "get-secret": "secret-to-sa", "35": "scan-configmaps",
 	"5": "find-volume-mounts", "find-mounts": "find-volume-mounts",
 	"20": "attack-pod-hostpath-mount", "attack-hostpath-mount": "attack-pod-hostpath-mount", "attack-pod-mount": "attack-pod-hostpath-mount", "attack-hostmount-pod": "attack-pod-hostpath-mount", "attack-mount-pod": "attack-pod-hostpath-mount",
 	"12": "aws-get-token", "get-aws-token": "aws-get-token", "13": "gcp-get-token", "get-gcp-token": "gcp-get-token",

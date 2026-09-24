@@ -10,6 +10,7 @@ aws-empty-assumed-role	aws-empty-assumed-role	aws-empty-assumed-role.md
 cert-menu	cert-menu	cert-menu.md
 list-secrets	list-secrets	list-secrets.md
 secret-to-sa	secret-to-sa	secret-to-sa.md
+scan-configmaps	scan-configmaps	scan-configmaps.md
 aws-get-token	aws-get-token	aws-get-token.md
 gcp-get-token	gcp-get-token	gcp-get-token.md
 gcp-attack-kube-env	gcp-attack-kube-env	gcp-attack-kube-env.md

@@ -1,16 +1,20 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/inguardians/peirates/internal/modules"
+	"github.com/inguardians/peirates/internal/modules/configmapscan"
 	"github.com/inguardians/peirates/internal/modules/hostpid"
 )
 
 var launchHostPIDBreakout = func() error {
 	return hostpid.Launch(os.Stdin, os.Stdout, os.Stderr)
 }
+
+var launchConfigMapScan = configmapscan.Run
 
 func newModuleRegistry(session *Session) *modules.Registry {
 	registry := modules.NewRegistry()
@@ -65,6 +69,14 @@ func newModuleRegistry(session *Session) *modules.Registry {
 		return modules.Continue
 	}, "cert-menu")
 	registry.Register(func() modules.Result { listSecrets(&session.Connection); return modules.Continue }, "list-secrets")
+	registry.Register(func() modules.Result {
+		accounts := append([]ServiceAccount(nil), session.ServiceAccounts...)
+		certificates := append([]ClientCertificateKeyPair(nil), session.ClientCertificates...)
+		if err := launchConfigMapScan(context.Background(), session.Connection, accounts, certificates, os.Stdout); err != nil {
+			fmt.Fprintf(os.Stderr, "[scan-configmaps] %v\n", err)
+		}
+		return modules.Continue
+	}, "scan-configmaps")
 	registry.Register(func() modules.Result {
 		getServiceAccountTokenFromSecret(session.Connection, &session.ServiceAccounts, session.Interactive)
 		return modules.Continue
