@@ -276,6 +276,20 @@ The test refuses a pre-existing `peirates-scan-configmaps-integration` cluster
 and deletes only a cluster proven to belong to this run. Override its name
 with `PEIRATES_SCAN_CONFIGMAPS_KIND_CLUSTER`.
 
+For hands-on testing from an interactive terminal, run
+`test/scan-configmaps-kind-manual.sh`. It opens the full Peirates menu on a
+disposable Kind node. Press Enter at the startup discovery pause, enter `35`
+or `scan-configmaps`, inspect the six expected finding locations and three
+identity coverage lines shown by the harness, then press Enter to return to
+the menu and enter `exit`. You can try both command forms in the same session.
+The harness independently checks ConfigMap data, RBAC, and fixture health
+before and after the menu session; it never prints the credential values.
+It refuses a pre-existing `peirates-scan-configmaps-manual` cluster and removes
+only its own cluster on normal exit or Ctrl-C. Peirates may print its existing
+`Problem with scanln` message after a blank Enter at a pause; the menu still
+continues. Override the name with `PEIRATES_SCAN_CONFIGMAPS_MANUAL_CLUSTER`.
+This manual harness is not part of the aggregate Kind suite.
+
 ## Secret-to-service-account integration test
 
 Run `make secret-to-sa-kind-test` to create a disposable Kind cluster and test
